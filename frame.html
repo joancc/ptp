@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width; initial-scale=2; maximum-scale=2; user-scalable=0;" />
+
+    <!--<meta charset="utf-8">-->
+    <script src="js/libraries/jquery-2.1.1.js"></script>
+
+    <!--4 files for Blockly-->
+    <script src="js/libraries/blockly_compressed.js"></script>
+
+    <!--<script src="js/libraries/blocks_compressed.js"></script>-->
+      <!--REPLACING SINGLE FILE WITH UNCOMPRESSED-->
+      <script src="js/libraries/blocks/logic.js"></script>
+
+      <!--Modified repeat block-->
+      <script src="js/libraries/blocks/loops.js"></script>
+
+      <script src="js/libraries/blocks/math.js"></script>
+      <script src="js/libraries/blocks/text.js"></script>
+      <script src="js/libraries/blocks/lists.js"></script>
+      <script src="js/libraries/blocks/colour.js"></script>
+      <script src="js/libraries/blocks/variables.js"></script>
+      <script src="js/libraries/blocks/procedures.js"></script>
+    <!--<script src="js/libraries/javascript_compressed.js"></script>-->
+      <!--REPLACING SINGLE FILE WITH UNCOMPRESSED-->
+      <script src="js/libraries/generators/javascript.js"></script>
+      <script src="js/libraries/generators/javascript/logic.js"></script>
+      <script src="js/libraries/generators/javascript/loops.js"></script>
+      <script src="js/libraries/generators/javascript/math.js"></script>
+      <script src="js/libraries/generators/javascript/text.js"></script>
+      <script src="js/libraries/generators/javascript/lists.js"></script>
+      <script src="js/libraries/generators/javascript/colour.js"></script>
+      <script src="js/libraries/generators/javascript/variables.js"></script>
+      <script src="js/libraries/generators/javascript/procedures.js"></script>
+    <script src="msg/js/en.js"></script>
+
+    <script src="js/libraries/acorn_interpreter.js"></script>
+
+    <!-- CUSTOM BLOCKS -->
+    <script src="js/custom/blocks/start.js"></script>
+    <script src="js/custom/blocks/walk.js"></script>
+    <script src="js/custom/blocks/forward.js"></script>
+    <script src="js/custom/blocks/turn_right.js"></script>
+    <script src="js/custom/blocks/turn_left.js"></script>
+    <script src="js/custom/blocks/jump.js"></script>
+    <script src="js/custom/blocks/super_jump.js"></script>
+    <script src="js/custom/blocks/long_jump.js"></script>
+    <script src="js/custom/blocks/empty.js"></script>
+    <script src="js/custom/blocks/empty_cell.js"></script>
+    <script src="js/custom/blocks/empty_cell_left.js"></script>
+    <script src="js/custom/blocks/empty_cell_right.js"></script>
+    <script src="js/custom/blocks/obstacle.js"></script>
+    <script src="js/custom/blocks/obstacle2.js"></script>
+    <script src="js/custom/blocks/obstacle3.js"></script>
+    <script src="js/custom/blocks/obstacle4.js"></script>
+    <script src="js/custom/blocks/target.js"></script>
+    <script src="js/custom/blocks/target2.js"></script>
+    <script src="js/custom/blocks/repeat_until.js"></script>
+    <script src="js/custom/blocks/repeat_while.js"></script>
+
+    <style>
+      html, body {
+        background-color: #fff;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+        height: 100%;
+      }
+
+      .blocklySvg {
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+
+    <script>
+
+      function init() {
+        Blockly.inject(document.body, {
+//          maxBlocks: 5,
+          toolbox: document.getElementById('toolbox')
+      });
+        // Let the top-level application know that Blockly is ready.
+        
+        window.parent.blocklyLoaded(Blockly);
+
+        //Change background color on load
+//        $("svg").css("background-color", "#5eabed");
+      }
+    </script>
+  </head>
+  <body onload="init()">
+    <xml id="toolbox" style="display: none">
+      <!-- <block type="controls_if"></block>
+      <block type="controls_repeat_ext"></block>
+      <block type="logic_compare"></block>
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="text"></block>
+      <block type="text_print"></block> -->
+      <block type="walk"></block>
+    </xml>
+  </body>
+</html>

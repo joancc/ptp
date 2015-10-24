@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title></title>
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <!--<link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />-->
+</head>
+<body>
+
+
+
+
+<!--<a href="#popupBasic" data-rel="popup">Open Popup</a>-->
+
+<!--<div data-role="popup" id="popupBasic">-->
+  <!--<p>This is a completely basic popup, no options set.<p>-->
+<!--</div>-->
+
+
+
+
+
+
+
+
+<!--<nav class="navbar navbar-default" role="navigation">-->
+
+  <!--Preload all images for working offline-->
+  <div id="preloadImages">
+    <img src="../images/BlackSpace.png">
+    <img src="../images/cat.png">
+    <img src="../images/GreenCircle.png">
+    <img src="../images/if_empty.png">
+    <img src="../images/if_empty_else.png">
+    <img src="../images/if_obstacle.png">
+    <img src="../images/if_obstacle_else.png">
+    <img src="../images/jump.png">
+    <img src="../images/not.png">
+    <img src="../images/not_target.png">
+    <img src="../images/PurpleCircle.png">
+    <img src="../images/RedCircle.png">
+    <img src="../images/repeat2.png">
+    <img src="../images/repeat3.png">
+    <img src="../images/repeat9.png">
+    <img src="../images/repeat_until_target.png">
+    <img src="../images/repeat_while.png">
+    <img src="../images/repeat_while_not_target.png">
+    <img src="../images/start.png">
+    <img src="../images/walk.png">
+    <img src="../images/WhiteSpace.png">
+    <img src="../images/triangleIsoceles.png">
+
+  </div>
+
+  <!--<div class="container-fluid">-->
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <!-- <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">Brand</a>
+    </div> -->
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <!--<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">-->
+      <!--<ul class="nav navbar-nav">-->
+        <!--<li><button type = "button" id="levelSelect" class="btn btn-default">Level select</button></li>-->
+      <!--</ul>-->
+
+
+      <!--<div id="login">-->
+        <!--<form class="login-form">-->
+          <!--<h2>Log In</h2>-->
+          <!--<div class="error" style="display:none"></div>-->
+          <!--<input type="text" id="login-username" placeholder="Username" />-->
+          <!--<input type="password" id="login-password" placeholder="Password" />-->
+          <!--<button type = "button" class="btn btn-default">Log In</button>-->
+        <!--</form>-->
+      <!--</div>-->
+      <div id="logout">
+        <h2></h2>
+        <button type="button" class="btn btn-default">Log out</button>
+      </div>
+
+      <!-- </div> --><!-- /.navbar-collapse -->
+    <!--</div> --><!-- /.container-fluid -->
+</nav>
+
+<span id="currentUser"></span>
+
+<div class="container">
+  <div class="row text-center" id="topMenuText"></div>
+  <div class="row" id = "currentLevel"></div>
+  <div class="row">
+
+    <div id="p5ContainerParent" class="col-xs-4">
+      <div id="p5Container"></div>
+    </div>
+
+    <!--<div class="col-xs-7">-->
+      <!--Display code eval result when executing blocks.-->
+      <div id="codeEvalOutput">
+        True
+      </div>
+
+      <!--Disable iframe when animation is running -->
+      <div id="iframeBlocker" style="position: fixed; top: 0; left: 0; width: 60%; height: 100%; display: none; z-index: 5;"></div>
+      <iframe src="frame.html" width="550" height="400" allowTransparency="true">
+      </iframe>
+      <button class="btn" id="iframeResize"><i class="fa fa-arrow-left"></i></button>
+
+    <!--</div>-->
+
+    <!--<div class="col-xs-1">-->
+      <div id="controls">
+        <button class="btn btn-primary" id="toggleMenuButton"><i class="fa fa-bars fa-lg"></i></button>
+        <ul id="menuButtons">
+          <li><button id="levelSelect" class="btn btn-primary"><i class="fa fa-th-large"></i></button></li>
+          <li><button class="retry btn btn-primary"><i class="fa fa-repeat"></i></button></li>
+          <li><button class="tip btn btn-primary"><i class="fa fa-lightbulb-o"></i></button></li>
+          <li><button class="tip btn btn-danger" id="researcherButton" style="display: none;">!</button></li>
+        </ul>
+        <button class="btn btn-danger" id="newBlockTip">New</button>
+        <button id="play" class="btn btn-success">Start</button>
+      </div>
+    <!--</div>-->
+  </div>
+  <!--<div class="row">-->
+    <!--<div class="col-xs-12">-->
+      <!--<div id="controls">-->
+        <!--<ul id="menuButtons">-->
+          <!--<li><button class="retry btn">Retry</button></li>-->
+          <!--<li><button class="tip btn">Tip</button></li>-->
+          <!--<li><button class="btn btn-danger" id="newBlockTip">New</button></li>-->
+          <!--<li><button id="levelSelect" class="btn btn-default">Problem select</button></li>-->
+        <!--</ul>-->
+        <!--<button id="play" class="btn btn-primary">Start</button>-->
+      <!--</div>-->
+    <!--</div>-->
+  <!--</div>-->
+</div>
+
+<!-- Login modal -->
+<div class="modal fade loginModal" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        
+      </div>
+      <div class="modal-body">
+        <div id="login">
+          <form class="login-form">
+      
+            <div class="error" style="display:none"></div>
+            <input type="text" id="login-username" placeholder="Username" />
+            <input type="password" id="login-password" placeholder="Password" />
+            <button type = "button" class="btn btn-default">Log In</button>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- New block modal 1-->
+<div class="modal fade newBlockModal" id="newBlockModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="newBlockModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+        <h3>Try stacking more than one block</h3>
+      </div>
+      <div class="modal-footer">
+        <!--<button type="button" class="retry btn btn-default" data-dismiss="modal">Retry</button>-->
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal 1-->
+<div class="modal fade tipModal" id="tipModal1" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="tipModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+        <h3>Try stacking more than one block</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal 2-->
+<div class="modal fade tipModal" id="tipModal2" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="tipModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+
+        <!--<h3>Try using more than one "Walk" block.</h3>-->
+
+        <!--<div class="row">-->
+          <!--<div class="col-xs-3">-->
+            <!--<img src="../images/walk.png">-->
+          <!--</div>-->
+          <!--<div class="col-xs-9">-->
+            <!--<h3>This is the first block of your program. Add blocks under this one.</h3>-->
+          <!--</div>-->
+        <!--</div>-->
+        <!--<div class="row">-->
+          <!--<div class="col-xs-3">-->
+            <!--<img src="../images/walk.png">-->
+          <!--</div>-->
+          <!--<div class="col-xs-9">-->
+            <!--<h3>Each Walk block moves the cat one space to the right.</h3>-->
+          <!--</div>-->
+        <!--</div>-->
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal 3-->
+<div class="modal fade tipModal" id="tipModal3" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="tipModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal 4-->
+<div class="modal fade tipModal" id="tipModal4" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="tipModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Help modal 5-->
+<div class="modal fade tipModal" id="tipModal5" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="tipModalTitle">Hint</h4>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Success modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="successModalTitle">Correct</h4>
+      </div>
+      <div class="modal-body">
+        <h3>Proceed to next problem</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="nextLevel btn btn-default" data-dismiss="modal">Next question</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Multiple stacks warning modal -->
+<div class="modal fade" id="multipleStacksModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="multipleStacksModalTitle">Warning</h4>
+      </div>
+      <div class="modal-body">
+        <h3>Try connecting all the blocks to the Start block</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="instructions btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Level prompt Modal -->
+<div class="modal fade" id="instructionsModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="instructionsModalTitle">Instructions</h4>
+      </div>
+      <div class="modal-body">
+        <h3>Move the orange circle to the brown circle</h3>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="instructions btn btn-default" data-dismiss="modal">OK</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Level select Modal -->
+<div class="modal fade" id="levelSelectModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!--<button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>-->
+        <h4 class="modal-title" id="levelSelectModalTitle">Problem Select</h4>
+      </div>
+      <div class="modal-body worldSelectMenu" id="worldSelectMenu">
+        <div class="row">
+          <button class="btn btn-primary worldButton" type = "button" id="world1"         value = 1>Problem set 1</button>
+          <button class="btn btn-primary worldButton" type = "button" id="world2"         value = 2>Problem set 2</button>
+          <button class="btn btn-primary"             type = "button" id="challengeTask"  value = 99 data-dismiss="modal">Challenge</button>
+        </div>
+      </div>
+      <div class="modal-body levelSelectMenu" id="levelSelectMenu1">
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level1" data-dismiss="modal" value = 1>Problem 1</button>
+          <button class="btn btn-primary" type = "button" id="level2" data-dismiss="modal" value = 2 disabled>Problem 2</button>
+          <button class="btn btn-primary" type = "button" id="level3" data-dismiss="modal" value = 3 disabled>Problem 3</button>
+          <button class="btn btn-primary" type = "button" id="level4" data-dismiss="modal" value = 4 disabled>Problem 4</button>
+          <button class="btn btn-primary" type = "button" id="level5" data-dismiss="modal" value = 5 disabled>Problem 5</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level6" data-dismiss="modal" value = 6 disabled>Problem 6</button>
+          <button class="btn btn-primary" type = "button" id="level7" data-dismiss="modal" value = 7 disabled>Problem 7</button>
+          <button class="btn btn-primary" type = "button" id="level8" data-dismiss="modal" value = 8 disabled>Problem 8</button>
+          <button class="btn btn-primary" type = "button" id="level9" data-dismiss="modal" value = 9 disabled>Problem 9</button>
+          <button class="btn btn-primary" type = "button" id="level10" data-dismiss="modal" value = 10 disabled>Problem 10</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level11" data-dismiss="modal" value = 11 disabled>Problem 11</button>
+          <button class="btn btn-primary" type = "button" id="level12" data-dismiss="modal" value = 12 disabled>Problem 12</button>
+          <button class="btn btn-primary" type = "button" id="level13" data-dismiss="modal" value = 13 disabled>Problem 13</button>
+          <button class="btn btn-primary" type = "button" id="level14" data-dismiss="modal" value = 14 disabled>Problem 14</button>
+          <button class="btn btn-primary" type = "button" id="level15" data-dismiss="modal" value = 15 disabled>Problem 15</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level16" data-dismiss="modal" value = 16 disabled>Problem 16</button>
+          <button class="btn btn-primary" type = "button" id="level17" data-dismiss="modal" value = 17 disabled>Problem 17</button>
+          <button class="btn btn-primary" type = "button" id="level18" data-dismiss="modal" value = 18 disabled>Problem 18</button>
+          <button class="btn btn-primary" type = "button" id="level19" data-dismiss="modal" value = 19 disabled>Problem 19</button>
+          <button class="btn btn-primary" type = "button" id="level20" data-dismiss="modal" value = 20 disabled>Problem 20</button>
+        </div>
+      </div>
+      <div class="modal-body levelSelectMenu" id="levelSelectMenu2">
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level21" data-dismiss="modal" value = 1 disabled>Problem 1</button>
+          <button class="btn btn-primary" type = "button" id="level22" data-dismiss="modal" value = 2 disabled>Problem 2</button>
+          <button class="btn btn-primary" type = "button" id="level23" data-dismiss="modal" value = 3 disabled>Problem 3</button>
+          <button class="btn btn-primary" type = "button" id="level24" data-dismiss="modal" value = 4 disabled>Problem 4</button>
+          <button class="btn btn-primary" type = "button" id="level25" data-dismiss="modal" value = 5 disabled>Problem 5</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level26" data-dismiss="modal" value = 6 disabled>Problem 6</button>
+          <button class="btn btn-primary" type = "button" id="level27" data-dismiss="modal" value = 7 disabled>Problem 7</button>
+          <button class="btn btn-primary" type = "button" id="level28" data-dismiss="modal" value = 8 disabled>Problem 8</button>
+          <button class="btn btn-primary" type = "button" id="level29" data-dismiss="modal" value = 9 disabled>Problem 9</button>
+          <button class="btn btn-primary" type = "button" id="level30" data-dismiss="modal" value = 10 disabled>Problem 10</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level31" data-dismiss="modal" value = 11 disabled>Problem 11</button>
+          <button class="btn btn-primary" type = "button" id="level32" data-dismiss="modal" value = 12 disabled>Problem 12</button>
+          <button class="btn btn-primary" type = "button" id="level33" data-dismiss="modal" value = 13 disabled>Problem 13</button>
+          <button class="btn btn-primary" type = "button" id="level34" data-dismiss="modal" value = 14 disabled>Problem 14</button>
+          <button class="btn btn-primary" type = "button" id="level35" data-dismiss="modal" value = 15 disabled>Problem 15</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level36" data-dismiss="modal" value = 16 disabled>Problem 16</button>
+          <button class="btn btn-primary" type = "button" id="level37" data-dismiss="modal" value = 17 disabled>Problem 17</button>
+          <button class="btn btn-primary" type = "button" id="level38" data-dismiss="modal" value = 18 disabled>Problem 18</button>
+          <button class="btn btn-primary" type = "button" id="level39" data-dismiss="modal" value = 19 disabled>Problem 19</button>
+          <button class="btn btn-primary" type = "button" id="level40" data-dismiss="modal" value = 20 disabled>Problem 20</button>
+        </div>
+        <div class="row">
+          <button class="btn btn-primary" type = "button" id="level41" data-dismiss="modal" value = 21 disabled>Problem 21</button>
+          <button class="btn btn-primary" type = "button" id="level42" data-dismiss="modal" value = 22 disabled>Problem 22</button>
+          <button class="btn btn-primary" type = "button" id="level43" data-dismiss="modal" value = 23 disabled>Problem 23</button>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="retry btn btn-default" id="levelSelectBack">Problem Sets</button>
+        <button type="button" class="retry btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--SCRIPTS-->
+  <script src="js/libraries/jquery-2.1.1.js"></script>
+  <!--<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>-->
+  <script src="js/libraries/underscore.js"></script>
+  <script src="js/libraries/bootstrap.js"></script>
+  <!--<script src="js/libraries/bootstrap-modalmanager.js"></script>-->
+  <!--<script src="js/libraries/bootstrap-modal.js"></script>-->
+
+  <script type='application/javascript' src='js/libraries/fastclick.js'></script>
+
+  <!--Parse-->
+  <script src="//www.parsecdn.com/js/parse-1.3.2.min.js"></script>
+  <script>
+    Parse.initialize("DwxYG1GVVmvceeg31w6nQ42wkX3BW4ZD3ic5WfeN", "P0Wfoc6db7MNvUDpc533ZI43IRBLqIxqbmM2j5dF");
+  </script>
+
+  <script src="js/main.js"></script>
+
+  <!-- P5 -->
+  <script src="js/libraries/p5.js"></script>
+  <script src="js/_processing.js"></script>
+
+  <!-- BLOCKLY -->
+  <script src="js/libraries/acorn_interpreter.js"></script>
+  <script src="js/_blockly.js"></script>
+  
+</body>
+</html>
