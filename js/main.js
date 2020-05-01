@@ -1,405 +1,372 @@
 var CURRENT_USER = {};
 var menuButtonsOpen = false;
 
-$( document ).ready(function() {  
-	//Disable scrolling for mobile  
-	//$(document).bind('touchmove', function(e) {  
-	//  e.preventDefault();  
-	//});  
-	$menuButtons = $("ul#menuButtons");  
-	$menuButtons.slideUp();  
-	$topMenuText = $("#topMenuText");  
+$(document).ready(function () {
+  //Disable scrolling for mobile
+  //$(document).bind('touchmove', function(e) {
+  //  e.preventDefault();
+  //});
+  $menuButtons = $("ul#menuButtons");
+  $menuButtons.slideUp();
+  $topMenuText = $("#topMenuText");
 
-	function hideControlsMenu(){    
-		$menuButtons.slideUp();    
-		menuButtonsOpen = false;    
-		$topMenuText.text("");  
-	}  
+  function hideControlsMenu() {
+    $menuButtons.slideUp();
+    menuButtonsOpen = false;
+    $topMenuText.text("");
+  }
 
-	function openControlsMenu(){    
-		$("ul#menuButtons").slideDown();    
-		menuButtonsOpen = true;    
-		$topMenuText.text( $("#instructionsModal .modal-body h3").text() );  
-	}  
+  function openControlsMenu() {
+    $("ul#menuButtons").slideDown();
+    menuButtonsOpen = true;
+    $topMenuText.text($("#instructionsModal .modal-body h3").text());
+  }
 
-	$("button#toggleMenuButton").click(function(){    
-		if(menuButtonsOpen){      
-			hideControlsMenu();    
-		}else{      
-			openControlsMenu();    
-		}  
-	});  
+  $("button#toggleMenuButton").click(function () {
+    if (menuButtonsOpen) {
+      hideControlsMenu();
+    } else {
+      openControlsMenu();
+    }
+  });
 
-	var $iframeResize = $("#iframeResize");  
-	var iframeSizeFull = true;  
-	$iframeResize.click(function(){    
-		iframeResizeUser();  
-	});  
+  var $iframeResize = $("#iframeResize");
+  var iframeSizeFull = true;
+  $iframeResize.click(function () {
+    iframeResizeUser();
+  });
 
-	function iframeResizeUser(){    
-		if(iframeSizeFull){      
-			$("iframe").css("width", "50%");      
-			$("#iframeResize").css("left", "45%");      
-			iframeSizeFull = false;    
-		}else{      
-			$("iframe").css("width", "60%");      
-			$("#iframeResize").css("left", "55%");      
-			iframeSizeFull = true;    
-		}  
-	}  
+  function iframeResizeUser() {
+    if (iframeSizeFull) {
+      $("iframe").css("width", "50%");
+      $("#iframeResize").css("left", "45%");
+      iframeSizeFull = false;
+    } else {
+      $("iframe").css("width", "60%");
+      $("#iframeResize").css("left", "55%");
+      iframeSizeFull = true;
+    }
+  }
 
-	var $play = $("#play");  
-	var $iframeBlocker = $("#iframeBlocker");  
+  var $play = $("#play");
+  var $iframeBlocker = $("#iframeBlocker");
 
-	$play.click(function(){    
-		$play.prop("disabled", true);    
-		$iframeBlocker.show();    
-		//Resize blockly workspace to full width    
-		iframeSizeFull = false;    
-		iframeResizeUser();    
+  $play.click(function () {
+    $play.prop("disabled", true);
+    $iframeBlocker.show();
+    //Resize blockly workspace to full width
+    iframeSizeFull = false;
+    iframeResizeUser();
 
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var Play = Parse.Object.extend("Play");      
-			var playParse = new Play();      
-			var blocksUsed = Blockly.mainWorkspace.getAllBlocks();      
-			var totalBlocksUsed = blocksUsed.length;      
-			
-			//Take away the embedded blocks      
-			blocksUsed.forEach(function(element, index, array){        
-				if(element.type === "target" ||          
-					element.type === "target2" ||          
-					element.type === "logic_negate" ||          
-					element.type === "empty" ||          
-					element.type === "empty_cell" ||          
-					element.type === "empty_cell_left" ||          
-					element.type === "empty_cell_right" ||          
-					element.type === "obstacle" ||          
-					element.type === "obstacle2" ||          
-					element.type === "obstacle3" ||          
-					element.type === "obstacle4"        )        
-				{          
-					console.log("Minus " + element.type);          
-					totalBlocksUsed--;        
-				}      
-			});      
+    setTimeout(function animationComplete() {
+      console.log("Running animationComplete");
+      if (window.animationsArray.length != 0) {
+        setTimeout(function () {
+          animationComplete();
+        }, 200);
+      } else {
+        $play.prop("disabled", false);
+        $iframeBlocker.hide();
+      }
+    }, 200);
 
-			console.log("Blocks used on Start: " + totalBlocksUsed);      
-			playParse.set("level", currentLevel);      
-			playParse.set("blocksUsed", totalBlocksUsed);      
-			playParse.set("codeUsed", Blockly.JavaScript.workspaceToCode());      
-			playParse.set("time", new Date());      
-			playParse.set("UserId", CURRENT_USER.id);      
-			playParse.save();    
-		}    
+    executeBlockly();
+  });
 
-		setTimeout(      
-			function animationComplete(){        
-				console.log("Running animationComplete");        
-				if(window.animationsArray.length != 0){          
-					setTimeout(function(){            
-						animationComplete();          
-					}, 200);        
-				}else{          
-					$play.prop("disabled", false);          
-					$iframeBlocker.hide();        
-				}      
-			}    
-			, 200);    
+  $(".modal .retry").click(function () {
+    ReloadLevel();
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var Retry = Parse.Object.extend("Retry");
+    //   var retry = new Retry();
+    //   retry.set("time", new Date());
+    //   retry.set("UserId", CURRENT_USER.id);
+    //   retry.save();
+    // }
+  });
 
-		executeBlockly();  
-	});  
-	
+  $(".tipModal").on("hidden.bs.modal", function () {
+    invalidState = false;
+    player.x = player.init_x;
+    player.y = player.init_y;
+    player.angle = 0;
+    redraw();
+    console.log("Tip modal hid");
+    console.log(this.id);
 
-	$(".modal .retry").click(function(){    
-		ReloadLevel();    
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var Retry = Parse.Object.extend("Retry");      
-			var retry = new Retry();      
-			retry.set("time", new Date());      
-			retry.set("UserId", CURRENT_USER.id);      
-			retry.save();    
-		}  
-	});  
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var HintModalClosed = Parse.Object.extend("HintClosed");
+    //   var closeHint = new HintModalClosed();
+    //   closeHint.set("HintId", tipToShow - 1);
+    //   closeHint.set("Level", currentLevel);
+    //   closeHint.set("time", new Date());
+    //   closeHint.set("UserId", CURRENT_USER.id);
+    //   closeHint.save();
+    // }
+  });
 
-	$('.tipModal').on('hidden.bs.modal', function () {    
-		invalidState = false;    
-		player.x = player.init_x;    
-		player.y = player.init_y;    
-		player.angle = 0;    
-		redraw();    
-		console.log("Tip modal hid");    
-		console.log(this.id);    
+  $("#newBlockModal").on("hidden.bs.modal", function () {
+    invalidState = false;
+    player.x = player.init_x;
+    player.y = player.init_y;
+    player.angle = 0;
+    redraw();
+    console.log("New hint modal hid");
+    console.log(this.id);
 
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var HintModalClosed = Parse.Object.extend("HintClosed");      
-			var closeHint = new HintModalClosed();      
-			closeHint.set("HintId", tipToShow - 1);      
-			closeHint.set("Level", currentLevel);      
-			closeHint.set("time", new Date());      
-			closeHint.set("UserId", CURRENT_USER.id);      
-			closeHint.save();    
-		}  
-	});  
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var HintModalClosed = Parse.Object.extend("HintClosed");
+    //   var closeHint = new HintModalClosed();
+    //   closeHint.set("HintId", -1);
+    //   closeHint.set("Level", currentLevel);
+    //   closeHint.set("time", new Date());
+    //   closeHint.set("UserId", CURRENT_USER.id);
+    //   closeHint.save();
+    // }
+  });
 
-	$('#newBlockModal').on('hidden.bs.modal', function () {    
-		invalidState = false;    
-		player.x = player.init_x;    
-		player.y = player.init_y;    
-		player.angle = 0;    
-		redraw();    
-		console.log("New hint modal hid");    
-		console.log(this.id);    
+  $("#successModal").on("hidden.bs.modal", function () {
+    console.log("Modal hid");
+    invalidState = false;
+    player.x = player.init_x;
+    player.y = player.init_y;
+    player.angle = 0;
+    redraw();
+  });
 
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var HintModalClosed = Parse.Object.extend("HintClosed");      
-			var closeHint = new HintModalClosed();      
-			closeHint.set("HintId", -1);      
-			closeHint.set("Level", currentLevel);      
-			closeHint.set("time", new Date());      
-			closeHint.set("UserId", CURRENT_USER.id);      
-			closeHint.save();    
-		}  
-	});  
+  $("#menuButtons .retry").click(function () {
+    //Kill all animations in queue
+    while (animationsArray.length > 0) {
+      clearTimeout(animationsArray.pop());
+    }
 
-	$('#successModal').on('hidden.bs.modal', function () {    
-		console.log("Modal hid");    
-		invalidState = false;    
-		player.x = player.init_x;    
-		player.y = player.init_y;    
-		player.angle = 0;    
-		redraw();  
-	});  
+    var level = currentLevel; //Store current level
+    currentLevel = 0; //Change currentLevel value so that Loading the level will make it seem like its the first time. This forces instructions to be displayed
+    LoadLevel(level); //Load the level
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var Retry = Parse.Object.extend("Retry");
+    //   var retry = new Retry();
+    //   var blocksUsed = Blockly.mainWorkspace.getAllBlocks();
+    //   var totalBlocksUsed = blocksUsed.length;
 
-	$("#menuButtons .retry").click(function(){    
-		//Kill all animations in queue    
-		while(animationsArray.length > 0){      
-			clearTimeout(animationsArray.pop());    
-		}    
+    //   //Take away the embedded blocks
+    //   blocksUsed.forEach(function (element, index, array) {
+    //     if (
+    //       element.type === "target" ||
+    //       element.type === "target2" ||
+    //       element.type === "logic_negate" ||
+    //       element.type === "empty" ||
+    //       element.type === "empty_cell" ||
+    //       element.type === "empty_cell_left" ||
+    //       element.type === "empty_cell_right" ||
+    //       element.type === "obstacle" ||
+    //       element.type === "obstacle2" ||
+    //       element.type === "obstacle3" ||
+    //       element.type === "obstacle4"
+    //     ) {
+    //       console.log("Minus " + element.type);
+    //       totalBlocksUsed--;
+    //     }
+    //   });
 
-		var level = currentLevel; //Store current level    
-		currentLevel = 0; //Change currentLevel value so that Loading the level will make it seem like its the first time. This forces instructions to be displayed    
-		LoadLevel(level); //Load the level    
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var Retry = Parse.Object.extend("Retry");      
-			var retry = new Retry();      
-			var blocksUsed = Blockly.mainWorkspace.getAllBlocks();      
-			var totalBlocksUsed = blocksUsed.length;      
+    //   console.log("Blocks used on Retry: " + totalBlocksUsed);
+    //   retry.set("level", currentLevel);
+    //   retry.set("blocksUsed", totalBlocksUsed);
+    //   retry.set("codeUsed", Blockly.JavaScript.workspaceToCode());
+    //   retry.set("time", new Date());
+    //   retry.set("UserId", CURRENT_USER.id);
+    //   retry.save();
+    // }
+  });
 
-			//Take away the embedded blocks      
-			blocksUsed.forEach(function(element, index, array){        
-				if(element.type === "target" ||          
-					element.type === "target2" ||          
-					element.type === "logic_negate" ||          
-					element.type === "empty" ||          
-					element.type === "empty_cell" ||          
-					element.type === "empty_cell_left" ||          
-					element.type === "empty_cell_right" ||          
-					element.type === "obstacle" ||          
-					element.type === "obstacle2" ||          
-					element.type === "obstacle3" ||          
-					element.type === "obstacle4"        )        
-				{          
-					console.log("Minus " + element.type);          
-					totalBlocksUsed--;        
-				}      
-			});      
+  $(".tip").click(function () {
+    //Data is saved first, before tipToShow is modified
+    console.log("Hint modal requested from menu");
+    console.log(tipToShow);
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var HintRequested = Parse.Object.extend("HintRequested");
+    //   var hintModalRequested = new HintRequested();
+    //   hintModalRequested.set(
+    //     "HintId",
+    //     tipToShow > totalNumTips ? 1 : tipToShow
+    //   );
+    //   hintModalRequested.set("Level", currentLevel);
+    //   hintModalRequested.set("time", new Date());
+    //   hintModalRequested.set("UserId", CURRENT_USER.id);
+    //   hintModalRequested.save();
+    // }
 
-			console.log("Blocks used on Retry: " + totalBlocksUsed);      
-			retry.set("level", currentLevel);      
-			retry.set("blocksUsed", totalBlocksUsed);      
-			retry.set("codeUsed", Blockly.JavaScript.workspaceToCode());      
-			retry.set("time", new Date());      
-			retry.set("UserId", CURRENT_USER.id);      
-			retry.save();    
-		}  
-	});  
+    //Hide menu buttons and instructions text
+    hideControlsMenu();
+    displayTip();
+  });
 
-	$(".tip").click(function(){    
-		//Data is saved first, before tipToShow is modified    
-		console.log("Hint modal requested from menu");    
-		console.log(tipToShow);    
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var HintRequested = Parse.Object.extend("HintRequested");      
-			var hintModalRequested = new HintRequested();      
-			hintModalRequested.set("HintId", (tipToShow > totalNumTips) ? 1 : tipToShow);      
-			hintModalRequested.set("Level", currentLevel);      
-			hintModalRequested.set("time", new Date());      
-			hintModalRequested.set("UserId", CURRENT_USER.id);      
-			hintModalRequested.save();    
-		};    
+  $("#newBlockTip").click(function () {
+    console.log("New Hint modal requested from menu");
+    console.log(tipToShow);
 
-		//Hide menu buttons and instructions text    
-		hideControlsMenu();    
-		displayTip();  
-	});  
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var HintRequested = Parse.Object.extend("HintRequested");
+    //   var hintModalRequested = new HintRequested();
+    //   hintModalRequested.set("HintId", -1);
+    //   hintModalRequested.set("Level", currentLevel);
+    //   hintModalRequested.set("time", new Date());
+    //   hintModalRequested.set("UserId", CURRENT_USER.id);
+    //   hintModalRequested.save();
+    // }
 
-	$("#newBlockTip").click(function(){    
-		console.log("New Hint modal requested from menu");    
-		console.log(tipToShow);    
+    $("#newBlockModal").modal("show");
+  });
 
-		if(!$.isEmptyObject(CURRENT_USER)){      
-			var HintRequested = Parse.Object.extend("HintRequested");      
-			var hintModalRequested = new HintRequested();      
-			hintModalRequested.set("HintId", -1);      
-			hintModalRequested.set("Level", currentLevel);      
-			hintModalRequested.set("time", new Date());      
-			hintModalRequested.set("UserId", CURRENT_USER.id);      
-			hintModalRequested.save();    
-		};    
+  $(".nextLevel").click(function () {
+    LoadNextLevel();
+  });
 
-		$("#newBlockModal").modal('show');  
-	});  
+  $("button#levelSelect").click(function () {
+    hideControlsMenu();
 
-	$(".nextLevel").click(function(){    
-		LoadNextLevel();  
-	});  
+    if (currentLevel <= 20) {
+      $("#worldSelectMenu").hide();
+      $("#levelSelectMenu1").show();
+      $("#levelSelectMenu2").hide();
+    } else if (currentLevel <= 42) {
+      $("#worldSelectMenu").hide();
+      $("#levelSelectMenu1").hide();
+      $("#levelSelectMenu2").show();
+    }
 
-	$("button#levelSelect").click(function(){    
-		hideControlsMenu();    
+    $("#levelSelectModal").modal({
+      backdrop: "static",
+      show: true,
+    });
+  });
 
-		if(currentLevel <= 20){      
-			$("#worldSelectMenu").hide();      
-			$("#levelSelectMenu1").show();      
-			$("#levelSelectMenu2").hide();    
-		}else if(currentLevel <= 42){      
-			$("#worldSelectMenu").hide();      
-			$("#levelSelectMenu1").hide();      
-			$("#levelSelectMenu2").show();    
-		}    
+  $("button#levelSelectBack").click(function () {
+    $("#worldSelectMenu").show();
+    $("#levelSelectMenu1").hide();
+    $("#levelSelectMenu2").hide();
+    $("#levelSelectBack").hide();
+  });
 
-		$("#levelSelectModal").modal({      
-			backdrop: 'static',      
-			show: true    
-		});  
-	});    
+  $(".worldButton").click(function () {
+    var worldNum = this.value;
+    console.log(worldNum);
 
-	$("button#levelSelectBack").click(function(){      
-		$("#worldSelectMenu").show();      
-		$("#levelSelectMenu1").hide();      
-		$("#levelSelectMenu2").hide();      
-		$("#levelSelectBack").hide();    
-	});  
+    $("#worldSelectMenu").hide();
+    $("#levelSelectMenu1").hide();
+    $("#levelSelectMenu2").hide();
+    $("#levelSelectMenu" + worldNum).show();
+    $("#levelSelectBack").show();
+  });
 
-	$(".worldButton").click(function(){    
-		var worldNum = this.value;    
-		console.log(worldNum);    
+  $("#challengeTask").click(function () {
+    var challengePassword = prompt("Password: ");
+    if (challengePassword === "ptp") {
+      LoadLevel(99);
+      $("#researcherButton").show();
+      $("#levelSelect").hide();
 
-		$("#worldSelectMenu").hide();    
-		$("#levelSelectMenu1").hide();    
-		$("#levelSelectMenu2").hide();    
-		$("#levelSelectMenu" + worldNum).show();    
-		$("#levelSelectBack").show();  
-	});  
+      //   if (!$.isEmptyObject(CURRENT_USER)) {
+      //     var StartChallengeTask = Parse.Object.extend("StartChallengeTask");
+      //     var startChallengeTask = new StartChallengeTask();
+      //     startChallengeTask.set("time", new Date());
+      //     startChallengeTask.set("UserId", CURRENT_USER.id);
+      //     startChallengeTask.save();
+      //   }
+    }
+  });
 
-	$("#challengeTask").click(function(){    
-		var challengePassword = prompt("Password: ");    
-		if (challengePassword === "ptp") {      
-			LoadLevel(99);      
-			$("#researcherButton").show();      
-			$("#levelSelect").hide();      
+  $("#researcherButton").click(function () {
+    var challengeExitPassword = prompt("Password: ");
+    if (challengeExitPassword === "ptpexit") {
+      //   if (!$.isEmptyObject(CURRENT_USER)) {
+      //     var ExitChallengeTask = Parse.Object.extend("ExitChallengeTask");
+      //     var exitChallengeTask = new ExitChallengeTask();
+      //     exitChallengeTask.set("time", new Date());
+      //     exitChallengeTask.set("UserId", CURRENT_USER.id);
+      //     exitChallengeTask.save();
+      //   }
 
-			if(!$.isEmptyObject(CURRENT_USER)) {        
-				var StartChallengeTask = Parse.Object.extend("StartChallengeTask");        
-				var startChallengeTask = new StartChallengeTask();        
-				startChallengeTask.set("time", new Date());        
-				startChallengeTask.set("UserId", CURRENT_USER.id);        
-				startChallengeTask.save();      
-			}    
-		}  	
-	});  
+      alert("All done! Thank you!");
 
-	$("#researcherButton").click(function(){    
-		var challengeExitPassword = prompt("Password: ");    
-		if (challengeExitPassword === "ptpexit") {      
-			if(!$.isEmptyObject(CURRENT_USER)) {        
-				var ExitChallengeTask = Parse.Object.extend("ExitChallengeTask");        
-				var exitChallengeTask = new ExitChallengeTask();        
-				exitChallengeTask.set("time", new Date());        
-				exitChallengeTask.set("UserId", CURRENT_USER.id);        
-				exitChallengeTask.save();      
-			}      
+      LoadLevel(1);
+    }
+  });
 
-			alert("All done! Thank you!");      
+  $(".levelSelectMenu button").click(function () {
+    console.log(this);
+    console.log(this.id);
+    var level = parseInt(this.id.match(/\d+/)[0]);
+    eval("LoadLevel(" + level + ");");
+    console.log("Level selected from menu");
+    console.log(this);
+    // if (!$.isEmptyObject(CURRENT_USER)) {
+    //   var LevelSelectedFromMenu = Parse.Object.extend("LevelSelectedFromMenu");
+    //   var levelSelectedFromMenu = new LevelSelectedFromMenu();
+    //   levelSelectedFromMenu.set("level", level);
+    //   levelSelectedFromMenu.set("time", new Date());
+    //   levelSelectedFromMenu.set("UserId", CURRENT_USER.id);
+    //   levelSelectedFromMenu.save();
+    // }
+  });
 
-			LoadLevel(1);    
-		}  
-	});  
+  $(".login-form button").click(function () {
+    var username = $("#login-username").val();
+    var password = $("#login-password").val();
+    console.log(username);
+    console.log(password);
 
-	$(".levelSelectMenu button").click(function(){    
-		console.log(this);    
-		console.log(this.id);    
-		var level = parseInt( this.id.match(/\d+/)[0] );    
-		eval("LoadLevel("+level+");");    
-		console.log("Level selected from menu");    
-		console.log(this);    
-		if(!$.isEmptyObject(CURRENT_USER)) {      
-			var LevelSelectedFromMenu = Parse.Object.extend("LevelSelectedFromMenu");      
-			var levelSelectedFromMenu = new LevelSelectedFromMenu();      
-			levelSelectedFromMenu.set("level", level);      
-			levelSelectedFromMenu.set("time", new Date());      
-			levelSelectedFromMenu.set("UserId", CURRENT_USER.id);      
-			levelSelectedFromMenu.save();    
-		}  
-	});  
+    // Mock the user
+    const user = "User 1";
+    // Parse.User.logIn(username, password).then(
+    //   function (user) {
+    //Hide navbar to use all available space
+    $("nav").hide();
+    console.log("USER: " + user);
+    CURRENT_USER = user;
+    //CURRENT_USER = Parse.User.current();
+    $("#login").hide();
+    $("#logout h2").text(user);
+    $("span#currentUser").html(user);
+    $("#logout").show();
+    //var currentPlayer = Parse.User.current().id;
 
-	$(".login-form button").click(function(){    
-		var username = $("#login-username").val();    
-		var password = $("#login-password").val();    
-		console.log(username);    
-		console.log(password);    
-		Parse.User.logIn(username, password).then(        
-			function(user) {          
-				//Hide navbar to use all available space          
-				$("nav").hide();          
-				console.log("USER: " + user);          
-				CURRENT_USER = user;          
-				//CURRENT_USER = Parse.User.current();          
-				$("#login").hide();          
-				$("#logout h2").text(Parse.User.current().get("username"));          
-				$("span#currentUser").html( Parse.User.current().get("studentName") );          
-				$("#logout").show();          
-				//var currentPlayer = Parse.User.current().id;          
+    UnlockLevels(20);
+    console.log("Users max level: " + 20);
+    $("#loginModal").modal("hide");
+    LoadLevel(20);
+    //   },
+    //   function (error) {
+    //     alert("Invalid username or password");
+    //   }
+    // );
+  });
 
-				UnlockLevels(CURRENT_USER.attributes.maxLevel);          
-				console.log("Users max level: " + CURRENT_USER.attributes.maxLevel);          
-				$('#loginModal').modal('hide');          
-				LoadLevel(CURRENT_USER.attributes.maxLevel);                
-			},        
-			function(error) {          
-				alert("Invalid username or password");        
-			}
-		);  
-	});  
+  $("#logout button").click(function () {
+    // Parse.User.logOut();
+    $("#login").show();
+    $("#logout").hide();
+  });
 
-	$("#logout button").click(function(){    
-		Parse.User.logOut();    
-		$("#login").show();    
-		$("#logout").hide();  
-	});  
+  //Logout when the app is first loaded
+  // Parse.User.logOut();
+  CURRENT_USER = {};
+  $("#logout").hide();
 
-	//Logout when the app is first loaded  
-	Parse.User.logOut();  
-	CURRENT_USER = {};  
-	$("#logout").hide();  
-
-	
-	//Load Fast Click for mobile browsers  
-	$(function() {    
-		FastClick.attach(document.body);  
-	});
-
-	
+  //Load Fast Click for mobile browsers
+  $(function () {
+    FastClick.attach(document.body);
+  });
 });
 
 //START APP AFTER EVERYTHING HAS LOADED
 window.onload = init;
-function init(){  
-	Blockly.mainWorkspace.clear();  
-	console.log("init");  
-	$("#loginModal").modal({    
-		backdrop: 'static',    
-		show: true  
-	});  
+function init() {
+  Blockly.mainWorkspace.clear();
+  console.log("init");
+  $("#loginModal").modal({
+    backdrop: "static",
+    show: true,
+  });
 
-	// LoadLevel(1);
+  // LoadLevel(1);
 }
